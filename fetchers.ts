@@ -1,11 +1,11 @@
-import { delay } from "./helpers.js";
+import { delay } from "./helpers";
 import {
   ApiRaw,
   DatabaseRaw,
   FetcherConfig,
   FileRaw,
   NormalizedSalesRecord,
-} from "./types.js";
+} from "./types";
 
 // template pattern for main fetcher
 // MainFetcher is now generic over config and fetch result
@@ -69,6 +69,8 @@ class ApiFetcher extends MainFetcher<FetcherConfig, ApiRaw[]> {
 class DatabaseFetcher extends MainFetcher<FetcherConfig, DatabaseRaw[]> {
   async fetch(): Promise<DatabaseRaw[]> {
     await delay(1200); // Simulate database query delay
+    // throw new Error("Database connection timeout after 3 retries");
+
     return [
       {
         prod_name: "Laptop Stand",

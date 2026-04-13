@@ -1,75 +1,116 @@
-﻿# Sales Data Aggregation Pipeline
+# Sales Data Aggregation Pipeline
 
-A TypeScript prototype for aggregating sales events from multiple source types (API, database, and file) into a normalized structure.
+A TypeScript project that simulates collecting sales records from multiple sources, normalizing them into one shared shape, applying transformations, and producing aggregated results.
 
-## Overview
+## What This Project Does
 
-This repository demonstrates a modular data ingestion approach using common design patterns:
+The pipeline currently:
 
-- **Factory Pattern** to instantiate source-specific fetchers
-- **Strategy Pattern** to support interchangeable fetch behaviors
-- **Template Method Pattern** through a shared base fetcher class with overridable `fetch` and `normalize` methods
+- fetches mocked sales data from API, database, and file sources
+- normalizes each source into a shared sales record structure
+- applies configurable transformations
+- aggregates totals by category
+- emits pipeline lifecycle events through observers
 
-The code currently focuses on fetcher modeling, normalization, and pipeline/transformation concepts.
+This repository is set up as a small architecture exercise that demonstrates common backend design patterns in a practical way.
 
-## Repository Structure
+## Design Patterns Used
 
-- `fetchers.ts`: Fetcher abstractions, concrete fetchers, source factory, and sample execution
-- `pipeline.ts`: Transformation pipeline sketch with filter transformation example
-- `helpers.ts`: Shared utility helpers (for example, async delay simulation)
-- `README.md`: Project documentation
+- `Factory Pattern`: creates fetchers and transformations from config objects
+- `Strategy Pattern`: swaps source-specific fetch and transform behavior behind shared interfaces
+- `Template Method Pattern`: the base fetcher defines the shared contract while concrete fetchers implement source logic
+- `Observer Pattern`: logs pipeline events and failures through pluggable observers
+
+## Project Structure
+
+- `index.ts`: runnable entry point that builds the pipeline config and executes it
+- `pipline.ts`: pipeline orchestration logic for fetch, normalize, transform, aggregate, and summary output
+- `fetchers.ts`: source fetchers plus the fetcher factory
+- `transformations.ts`: normalize, filter, and aggregate transformations
+- `observers.ts`: console logging and error tracking observers
+- `types.ts`: shared TypeScript interfaces and result types
+- `helpers.ts`: utility helpers such as simulated async delay
 
 ## Data Flow
 
-1. Build source configuration objects.
-2. Create fetchers using the factory function (`createFetcher`).
-3. Fetch raw data from each source.
-4. Normalize source-specific payloads into a common sales model.
-5. Apply optional transformations (for example, time-based filtering in the pipeline prototype).
+1. `index.ts` defines the pipeline configuration.
+2. `SalesDataPipeline` creates fetchers for each configured source.
+3. Each fetcher retrieves mocked raw data and normalizes it into `NormalizedSalesRecord`.
+4. Transformations run in sequence.
+5. The aggregate stage groups records by category and calculates total sales.
+6. Observers receive status updates during execution.
+7. The final result includes aggregated data, summary metrics, and any source errors.
 
-## Unified Sales Shape
+## Normalized Record Shape
 
-Normalized records use these shared fields:
+Each normalized record uses the following structure:
 
-- `productName`
-- `categoryName`
-- `saleAmount`
-- `timestamp`
-- `type` (`api`, `database`, or `file`)
+```ts
+{
+  productName: string;
+  category: string;
+  amount: number;
+  timestamp: string;
+  channel: string;
+  source: string;
+}
+```
 
-Some source-specific metadata is preserved, such as `ref` (API) and `uniqueKey` (database).
+## Example Pipeline Configuration
 
-## Run Locally
+The default config in `index.ts` includes:
+
+- 3 sources: `api`, `database`, and `file`
+- 3 transformations: `normalize`, `filter`, and `aggregate`
+- 2 observers: `console-logger` and `error-tracker`
+
+The configured filter keeps records from the last 24 hours, and the aggregation groups by category.
+
+## Getting Started
 
 ### Prerequisites
 
 - Node.js 18+
 - npm
-- TypeScript tooling (`ts-node` recommended for quick execution)
 
-### Quick Start
-
-```bash
-npm init -y
-npm install -D typescript ts-node @types/node
-npx ts-node fetchers.ts
-```
-
-To run the pipeline prototype:
+### Install Dependencies
 
 ```bash
-npx ts-node pipeline.ts
+npm install
 ```
 
-## Current Notes / Limitations
+### Run the Project
 
-- `FileFetcher.normalize()` is currently a placeholder and returns an empty array.
-- `pipeline.ts` is a conceptual prototype and not yet integrated with the fetchers module.
-- Data is mocked and uses simulated delays; no live integrations are configured.
+```bash
+npm start
+```
 
-## Suggested Next Steps
+This runs `ts-node index.ts`, executes the pipeline, and prints the final aggregated result to the console.
 
-- Implement `FileFetcher.normalize()` to complete source parity.
-- Connect fetchers + transformations into a single executable pipeline.
-- Add aggregation stage(s), error handling strategy, and tests.
-- Introduce build scripts and lint/test setup (`package.json`, `tsconfig.json`, and CI).
+## Expected Output
+
+When the pipeline succeeds, the final output includes:
+
+- aggregated category data
+- total sales across all aggregated groups
+- number of successful and failed sources
+- total normalized records processed
+- total execution time
+- collected source errors, if any
+
+## Current Implementation Notes
+
+- Source data is mocked; no live API, database, or file integrations are connected yet.
+- Fetchers simulate latency with `delay(...)`.
+- Source fetches run concurrently with `Promise.allSettled`, so one failing source does not stop the whole pipeline.
+- The main pipeline file is currently named `pipline.ts`.
+- `fetchers.ts` contains a local demo `test()` call in addition to the exported factory, so importing it may also trigger sample fetch logging.
+
+## Future Improvements
+
+- connect the file source to real CSV or JSON parsing
+- add stronger typing for source-specific configs instead of broad index signatures
+- separate demo code from reusable modules
+- add unit tests for fetchers, transformations, and pipeline summaries
+- add linting and build scripts
+- support additional aggregation options beyond category totals

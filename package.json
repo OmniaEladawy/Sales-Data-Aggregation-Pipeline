@@ -1,0 +1,26 @@
+{
+  "name": "sales-data-aggregation-pipeline",
+  "version": "1.0.0",
+  "description": "A TypeScript prototype for aggregating sales events from multiple source types (API, database, and file) into a normalized structure.",
+  "main": "index.js",
+  "scripts": {
+    "start": "ts-node index.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OmniaEladawy/Sales-Data-Aggregation-Pipeline.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/OmniaEladawy/Sales-Data-Aggregation-Pipeline/issues"
+  },
+  "homepage": "https://github.com/OmniaEladawy/Sales-Data-Aggregation-Pipeline#readme",
+  "devDependencies": {
+    "@types/node": "^25.6.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^6.0.2"
+  }
+}
