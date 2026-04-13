@@ -1,12 +1,9 @@
 import { delay } from "./helpers.js";
 import {
   ApiRaw,
-  ApiResponse,
   DatabaseRaw,
-  DatabaseResponse,
   FetcherConfig,
   FileRaw,
-  FileResponse,
   NormalizedSalesRecord,
 } from "./types.js";
 
@@ -150,6 +147,7 @@ class FileFetcher extends MainFetcher<FetcherConfig, FileRaw[]> {
   }
 }
 
+// factory pattern
 // factory function to create fetcher instances based on source type(factory pattern)
 function createFetcher(config: FetcherConfig): MainFetcher<any, any> {
   const fetcherMapping: Record<

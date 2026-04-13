@@ -1,28 +1,3 @@
-// types.ts
-export interface SalesData {
-  productName: string;
-  categoryName: string;
-  saleAmount: number;
-  timestamp: string;
-}
-
-export interface ApiResponse extends SalesData {
-  type: "api";
-  ref: string;
-}
-
-export interface DatabaseResponse extends SalesData {
-  type: "database";
-  uniqueKey: string;
-}
-
-export interface FileResponse extends SalesData {
-  type: "file";
-  size: string;
-}
-
-export type FetcherResponse = ApiResponse | DatabaseResponse | FileResponse;
-
 // Generic config type for fetchers
 export interface FetcherConfig {
   name: string;
