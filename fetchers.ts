@@ -5,9 +5,9 @@ import {
   DatabaseRaw,
   DatabaseResponse,
   FetcherConfig,
-  FetcherResponse,
   FileRaw,
   FileResponse,
+  NormalizedSalesRecord,
 } from "./types.js";
 
 // template pattern for main fetcher
@@ -22,9 +22,7 @@ abstract class MainFetcher<C extends FetcherConfig = FetcherConfig, F = any> {
     this.type = config.type;
   }
   abstract fetch(): Promise<F>;
-  normalize(data: F): Array<FetcherResponse> {
-    return [];
-  }
+  abstract normalize(data: F): NormalizedSalesRecord[];
 }
 
 // strategy pattern for providing different fetcher implementations
@@ -58,14 +56,14 @@ class ApiFetcher extends MainFetcher<FetcherConfig, ApiRaw[]> {
     ];
   }
 
-  override normalize(data: ApiRaw[]): ApiResponse[] {
+  normalize(data: ApiRaw[]): NormalizedSalesRecord[] {
     return data.map((item) => ({
       productName: item.product_name,
-      categoryName: item.category_name,
-      saleAmount: item.sale_amount,
+      category: item.category_name,
+      amount: item.sale_amount,
       timestamp: item.timestamp,
-      type: "api",
-      ref: item.ref || "N/A",
+      channel: item.channel,
+      source: this.sourceName,
     }));
   }
 }
@@ -99,14 +97,14 @@ class DatabaseFetcher extends MainFetcher<FetcherConfig, DatabaseRaw[]> {
     ];
   }
 
-  override normalize(data: DatabaseRaw[]): DatabaseResponse[] {
+  normalize(data: DatabaseRaw[]): NormalizedSalesRecord[] {
     return data.map((item) => ({
       productName: item.prod_name,
-      categoryName: item.cat,
-      saleAmount: item.total,
+      category: item.cat,
+      amount: item.total,
       timestamp: item.timestamp,
-      type: "database",
-      uniqueKey: item.uniqueKey || "N/A",
+      channel: item.channel,
+      source: this.sourceName,
     }));
   }
 }
@@ -140,14 +138,14 @@ class FileFetcher extends MainFetcher<FetcherConfig, FileRaw[]> {
     ];
   }
 
-  override normalize(data: FileRaw[]): FileResponse[] {
+  normalize(data: FileRaw[]): NormalizedSalesRecord[] {
     return data.map((item) => ({
       productName: item.item,
-      categoryName: item.category,
-      saleAmount: item.amount,
+      category: item.category,
+      amount: item.amount,
       timestamp: item.timestamp,
-      type: "file",
-      size: "N/A",
+      channel: item.channel,
+      source: this.sourceName,
     }));
   }
 }
@@ -163,6 +161,7 @@ function createFetcher(config: FetcherConfig): MainFetcher<any, any> {
     file: FileFetcher,
   };
   const FetcherClass = fetcherMapping[config.type];
+
   if (!FetcherClass) {
     throw new Error(`Unknown source type: ${config.type}`);
   }

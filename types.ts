@@ -36,7 +36,6 @@ export type ApiRaw = {
   sale_amount: number;
   timestamp: string;
   channel: string;
-  ref?: string;
 };
 
 export type DatabaseRaw = {
@@ -45,7 +44,6 @@ export type DatabaseRaw = {
   total: number;
   timestamp: string;
   channel: string;
-  uniqueKey?: string;
 };
 
 export type FileRaw = {
