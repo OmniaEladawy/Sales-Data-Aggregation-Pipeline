@@ -1,37 +1,16 @@
 import { delay } from "./helpers.js";
-
-interface SalesData {
-  productName: string;
-  categoryName: string;
-  saleAmount: number;
-  timestamp: string;
-}
-
-interface ApiResponse extends SalesData {
-  type: "api";
-  ref: string;
-}
-
-interface DatabaseResponse extends SalesData {
-  type: "database";
-  uniqueKey: string;
-}
-
-interface FileResponse extends SalesData {
-  type: "file";
-  size: string;
-}
-
-type FetcherResponse = ApiResponse | DatabaseResponse | FileResponse;
+import {
+  ApiRaw,
+  ApiResponse,
+  DatabaseRaw,
+  DatabaseResponse,
+  FetcherConfig,
+  FetcherResponse,
+  FileRaw,
+  FileResponse,
+} from "./types.js";
 
 // template pattern for main fetcher
-// Generic config type for fetchers
-interface FetcherConfig {
-  name: string;
-  type: string;
-  [key: string]: any;
-}
-
 // MainFetcher is now generic over config and fetch result
 abstract class MainFetcher<C extends FetcherConfig = FetcherConfig, F = any> {
   config: C;
@@ -51,15 +30,6 @@ abstract class MainFetcher<C extends FetcherConfig = FetcherConfig, F = any> {
 // strategy pattern for providing different fetcher implementations
 
 // Api fetcher implementation
-type ApiRaw = {
-  product_name: string;
-  category_name: string;
-  sale_amount: number;
-  timestamp: string;
-  channel: string;
-  ref?: string;
-};
-
 class ApiFetcher extends MainFetcher<FetcherConfig, ApiRaw[]> {
   async fetch(): Promise<ApiRaw[]> {
     await delay(1000); // Simulate API call delay
@@ -101,15 +71,6 @@ class ApiFetcher extends MainFetcher<FetcherConfig, ApiRaw[]> {
 }
 
 // Database fetcher implementation
-type DatabaseRaw = {
-  prod_name: string;
-  cat: string;
-  total: number;
-  timestamp: string;
-  channel: string;
-  uniqueKey?: string;
-};
-
 class DatabaseFetcher extends MainFetcher<FetcherConfig, DatabaseRaw[]> {
   async fetch(): Promise<DatabaseRaw[]> {
     await delay(1200); // Simulate database query delay
@@ -151,14 +112,6 @@ class DatabaseFetcher extends MainFetcher<FetcherConfig, DatabaseRaw[]> {
 }
 
 // File fetcher implementation
-type FileRaw = {
-  item: string;
-  category: string;
-  amount: number;
-  timestamp: string;
-  channel: string;
-};
-
 class FileFetcher extends MainFetcher<FetcherConfig, FileRaw[]> {
   async fetch(): Promise<FileRaw[]> {
     await delay(800); // Simulate file read delay
@@ -187,9 +140,15 @@ class FileFetcher extends MainFetcher<FetcherConfig, FileRaw[]> {
     ];
   }
 
-  override normalize(data: FileRaw[]): FetcherResponse[] {
-    // Not implemented, but could be added for consistency
-    return [];
+  override normalize(data: FileRaw[]): FileResponse[] {
+    return data.map((item) => ({
+      productName: item.item,
+      categoryName: item.category,
+      saleAmount: item.amount,
+      timestamp: item.timestamp,
+      type: "file",
+      size: "N/A",
+    }));
   }
 }
 
