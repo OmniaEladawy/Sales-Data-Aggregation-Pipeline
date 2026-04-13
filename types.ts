@@ -79,6 +79,12 @@ export interface TransformationConfig {
   [key: string]: any;
 }
 
+export interface PipelineConfig {
+  sources: FetcherConfig[];
+  transformations: TransformationConfig[];
+  observers: { type: string }[];
+}
+
 export interface PipelineEvent {
   type:
     | "pipeline_started"

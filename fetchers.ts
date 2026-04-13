@@ -149,7 +149,7 @@ class FileFetcher extends MainFetcher<FetcherConfig, FileRaw[]> {
 
 // factory pattern
 // factory function to create fetcher instances based on source type(factory pattern)
-function createFetcher(config: FetcherConfig): MainFetcher<any, any> {
+export function createFetcher(config: FetcherConfig): MainFetcher<any, any> {
   const fetcherMapping: Record<
     string,
     new (config: FetcherConfig) => MainFetcher<any, any>
