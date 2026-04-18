@@ -14,11 +14,14 @@ export class SalesDataPipeline {
   private config: PipelineConfig;
   private observers: Observer[];
 
-  constructor(config: PipelineConfig) {
+  constructor(config: PipelineConfig, additionalObservers: Observer[] = []) {
     this.config = config;
-    this.observers = config.observers.map((observerConfig) =>
-      createObserver(observerConfig.type),
-    );
+    this.observers = [
+      ...config.observers.map((observerConfig) =>
+        createObserver(observerConfig.type),
+      ),
+      ...additionalObservers,
+    ];
   }
 
   private notify(event: PipelineEvent): void {
@@ -51,7 +54,7 @@ export class SalesDataPipeline {
 
       this.notify({
         type: "source_succeeded",
-        message: `✓ Source completed: ${fetcher.sourceName} (${normalizedData.length} records)`,
+        message: `[ok] Source completed: ${fetcher.sourceName} (${normalizedData.length} records)`,
         timestamp: new Date().toISOString(),
         meta: {
           source: fetcher.sourceName,
@@ -63,7 +66,6 @@ export class SalesDataPipeline {
     });
 
     const settledResults = await Promise.allSettled(fetchPromises);
-
     const successfulRecords: NormalizedSalesRecord[] = [];
 
     settledResults.forEach((result, index) => {
@@ -71,28 +73,28 @@ export class SalesDataPipeline {
 
       if (result.status === "fulfilled") {
         successfulRecords.push(...result.value);
-      } else {
-        const pipelineError: PipelineError = {
-          source: sourceName,
-          type: result.reason?.name || "SourceError",
-          message: result.reason?.message || "Unknown source error",
-          timestamp: new Date().toISOString(),
-        };
-
-        errors.push(pipelineError);
-
-        this.notify({
-          type: "source_failed",
-          message: `✗ Source failed: ${sourceName} (${pipelineError.message})`,
-          timestamp: pipelineError.timestamp,
-          meta: pipelineError,
-        });
+        return;
       }
+
+      const pipelineError: PipelineError = {
+        source: sourceName,
+        type: result.reason?.name || "SourceError",
+        message: result.reason?.message || "Unknown source error",
+        timestamp: new Date().toISOString(),
+      };
+
+      errors.push(pipelineError);
+
+      this.notify({
+        type: "source_failed",
+        message: `[failed] Source failed: ${sourceName} (${pipelineError.message})`,
+        timestamp: pipelineError.timestamp,
+        meta: pipelineError,
+      });
     });
 
     let transformedData: any = successfulRecords;
-    const transformations =
-      this.config.transformations.map(createTransformation);
+    const transformations = this.config.transformations.map(createTransformation);
 
     for (const transformation of transformations) {
       this.notify({
@@ -105,11 +107,19 @@ export class SalesDataPipeline {
     }
 
     const executionTimeMs = Date.now() - startTime;
+    const totalSales = Array.isArray(transformedData)
+      ? transformedData.reduce((sum: number, item: any) => {
+          if (typeof item?.totalSales === "number") {
+            return sum + item.totalSales;
+          }
 
-    const totalSales = transformedData.reduce(
-      (sum: number, item: any) => sum + item.totalSales,
-      0,
-    );
+          if (typeof item?.amount === "number") {
+            return sum + item.amount;
+          }
+
+          return sum;
+        }, 0)
+      : 0;
 
     const result: PipelineResult = {
       success: true,

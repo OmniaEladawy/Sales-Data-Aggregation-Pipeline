@@ -1,0 +1,19 @@
+@import "tailwindcss";
+
+@source "./*.html";
+@source "./*.js";
+
+@theme {
+  --font-sans: "Trebuchet MS", "Aptos", "Segoe UI", sans-serif;
+  --font-serif: Georgia, "Times New Roman", serif;
+
+  --color-ink: #172033;
+  --color-muted: #5f6b7d;
+  --color-paper: #f7f2ea;
+  --color-paper-strong: #fff9f2;
+  --color-teal: #12756a;
+  --color-amber: #c26b17;
+  --color-danger: #ad3a34;
+
+  --shadow-panel: 0 24px 60px rgba(21, 30, 44, 0.12);
+}

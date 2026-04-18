@@ -4,7 +4,10 @@
   "description": "A TypeScript prototype for aggregating sales events from multiple source types (API, database, and file) into a normalized structure.",
   "main": "index.js",
   "scripts": {
-    "start": "ts-node index.ts",
+    "start": "node node_modules/ts-node/dist/bin.js index.ts",
+    "build:css": "node node_modules/@tailwindcss/cli/dist/index.mjs -i ./ui/tailwind.css -o ./ui/styles.css",
+    "tailwind:watch": "node node_modules/@tailwindcss/cli/dist/index.mjs -i ./ui/tailwind.css -o ./ui/styles.css --watch",
+    "dashboard": "node node_modules/@tailwindcss/cli/dist/index.mjs -i ./ui/tailwind.css -o ./ui/styles.css && node node_modules/ts-node/dist/bin.js server.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -19,7 +22,9 @@
   },
   "homepage": "https://github.com/OmniaEladawy/Sales-Data-Aggregation-Pipeline#readme",
   "devDependencies": {
+    "@tailwindcss/cli": "^4.2.2",
     "@types/node": "^25.6.0",
+    "tailwindcss": "^4.2.2",
     "ts-node": "^10.9.2",
     "typescript": "^6.0.2"
   }

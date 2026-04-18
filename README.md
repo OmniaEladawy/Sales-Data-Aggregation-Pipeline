@@ -24,12 +24,18 @@ This repository is set up as a small architecture exercise that demonstrates com
 ## Project Structure
 
 - `index.ts`: runnable entry point that builds the pipeline config and executes it
+- `server.ts`: lightweight HTTP server that exposes the pipeline output to a browser UI
+- `pipeline-config.ts`: shared default pipeline configuration used by both the CLI and dashboard
 - `pipline.ts`: pipeline orchestration logic for fetch, normalize, transform, aggregate, and summary output
 - `fetchers.ts`: source fetchers plus the fetcher factory
 - `transformations.ts`: normalize, filter, and aggregate transformations
 - `observers.ts`: console logging and error tracking observers
 - `types.ts`: shared TypeScript interfaces and result types
 - `helpers.ts`: utility helpers such as simulated async delay
+- `ui/index.html`: dashboard markup
+- `ui/app.js`: dashboard rendering logic
+- `ui/tailwind.css`: Tailwind source file for the dashboard
+- `ui/styles.css`: compiled Tailwind output served by the dashboard
 
 ## Data Flow
 
@@ -87,6 +93,32 @@ npm start
 
 This runs `ts-node index.ts`, executes the pipeline, and prints the final aggregated result to the console.
 
+### Run the Dashboard
+
+```bash
+npm run dashboard
+```
+
+Then open `http://localhost:3000` in your browser.
+
+If you are using PowerShell with script execution restrictions, use:
+
+```bash
+npm.cmd run dashboard
+```
+
+### Rebuild Tailwind Styles
+
+```bash
+npm run build:css
+```
+
+For live Tailwind rebuilds while editing the dashboard:
+
+```bash
+npm run tailwind:watch
+```
+
 ## Expected Output
 
 When the pipeline succeeds, the final output includes:
@@ -97,14 +129,16 @@ When the pipeline succeeds, the final output includes:
 - total normalized records processed
 - total execution time
 - collected source errors, if any
+- a browser dashboard with summary cards, category totals, pipeline events, and errors
 
 ## Current Implementation Notes
 
 - Source data is mocked; no live API, database, or file integrations are connected yet.
+- Mocked timestamps are generated relative to the current time so the `last24hours` filter continues to return data.
 - Fetchers simulate latency with `delay(...)`.
 - Source fetches run concurrently with `Promise.allSettled`, so one failing source does not stop the whole pipeline.
 - The main pipeline file is currently named `pipline.ts`.
-- `fetchers.ts` contains a local demo `test()` call in addition to the exported factory, so importing it may also trigger sample fetch logging.
+- The dashboard styling is built with Tailwind CSS v4 via the local CLI.
 
 ## Future Improvements
 
