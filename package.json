@@ -4,10 +4,12 @@
   "description": "A TypeScript prototype for aggregating sales events from multiple source types (API, database, and file) into a normalized structure.",
   "main": "index.js",
   "scripts": {
-    "start": "node node_modules/ts-node/dist/bin.js index.ts",
+    "start": "node node_modules/@tailwindcss/cli/dist/index.mjs -i ./ui/tailwind.css -o ./ui/styles.css && node node_modules/ts-node/dist/bin.js server.ts",
+    "pipline": "npm run pipeline",
+    "pipeline": "node node_modules/ts-node/dist/bin.js index.ts",
     "build:css": "node node_modules/@tailwindcss/cli/dist/index.mjs -i ./ui/tailwind.css -o ./ui/styles.css",
     "tailwind:watch": "node node_modules/@tailwindcss/cli/dist/index.mjs -i ./ui/tailwind.css -o ./ui/styles.css --watch",
-    "dashboard": "node node_modules/@tailwindcss/cli/dist/index.mjs -i ./ui/tailwind.css -o ./ui/styles.css && node node_modules/ts-node/dist/bin.js server.ts",
+    "dashboard": "npm start",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

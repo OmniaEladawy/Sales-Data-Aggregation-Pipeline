@@ -91,7 +91,15 @@ npm install
 npm start
 ```
 
-This runs `ts-node index.ts`, executes the pipeline, and prints the final aggregated result to the console.
+This builds the dashboard CSS, starts `server.ts`, and keeps the local server running at `http://localhost:3000`.
+
+### Run the Pipeline in the Console
+
+```bash
+npm run pipeline
+```
+
+This runs `ts-node index.ts`, executes the pipeline once, and prints the final aggregated result to the console.
 
 ### Run the Dashboard
 
@@ -99,12 +107,12 @@ This runs `ts-node index.ts`, executes the pipeline, and prints the final aggreg
 npm run dashboard
 ```
 
-Then open `http://localhost:3000` in your browser.
+This is an alias for `npm start`.
 
 If you are using PowerShell with script execution restrictions, use:
 
 ```bash
-npm.cmd run dashboard
+npm.cmd start
 ```
 
 ### Rebuild Tailwind Styles
