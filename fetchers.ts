@@ -9,7 +9,7 @@ import {
 
 // template pattern for main fetcher
 // MainFetcher is now generic over config and fetch result
-abstract class MainFetcher<C extends FetcherConfig = FetcherConfig, F = any> {
+abstract class MainFetcher<C extends FetcherConfig, F> {
   config: C;
   sourceName: string;
   type: string;
@@ -153,10 +153,12 @@ class FileFetcher extends MainFetcher<FetcherConfig, FileRaw[]> {
 
 // factory pattern
 // factory function to create fetcher instances based on source type(factory pattern)
-export function createFetcher(config: FetcherConfig): MainFetcher<any, any> {
+export function createFetcher(
+  config: FetcherConfig,
+): MainFetcher<FetcherConfig, any> {
   const fetcherMapping: Record<
     string,
-    new (config: FetcherConfig) => MainFetcher<any, any>
+    new (config: FetcherConfig) => MainFetcher<FetcherConfig, any>
   > = {
     api: ApiFetcher,
     database: DatabaseFetcher,

@@ -1,7 +1,7 @@
 import { createServer, IncomingMessage, ServerResponse } from "http";
 import { readFile } from "fs/promises";
 import path from "path";
-import { SalesDataPipeline } from "./pipline";
+import { SalesDataPipeline } from "./pipeline";
 import { createDefaultPipelineConfig } from "./pipeline-config";
 import { Observer, PipelineEvent } from "./types";
 

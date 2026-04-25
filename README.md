@@ -145,7 +145,7 @@ When the pipeline succeeds, the final output includes:
 - Mocked timestamps are generated relative to the current time so the `last24hours` filter continues to return data.
 - Fetchers simulate latency with `delay(...)`.
 - Source fetches run concurrently with `Promise.allSettled`, so one failing source does not stop the whole pipeline.
-- The main pipeline file is currently named `pipline.ts`.
+- The main pipeline file is currently named `pipeline.ts`.
 - The dashboard styling is built with Tailwind CSS v4 via the local CLI.
 
 ## Future Improvements

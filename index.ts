@@ -1,4 +1,4 @@
-import { SalesDataPipeline } from "./pipline";
+import { SalesDataPipeline } from "./pipeline";
 import { createDefaultPipelineConfig } from "./pipeline-config";
 
 async function main() {
