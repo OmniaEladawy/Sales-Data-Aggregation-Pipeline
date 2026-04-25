@@ -1,3 +1,4 @@
+import "dotenv/config";
 import { PipelineConfig } from "./types";
 
 export function createDefaultPipelineConfig(): PipelineConfig {
@@ -6,19 +7,19 @@ export function createDefaultPipelineConfig(): PipelineConfig {
       {
         type: "api",
         name: "web-store",
-        url: "https://api.store.com/sales",
-        auth: { type: "bearer", token: "abc123" },
+        url: process.env.SALES_API_URL,
+        auth: { type: "bearer", token: process.env.SALES_API_TOKEN },
       },
       {
         type: "database",
         name: "mobile-app",
-        connection: "postgresql://localhost/mobile",
+        connection: process.env.SALES_DB_CONNECTION,
         query: "SELECT * FROM sales WHERE date = CURRENT_DATE",
       },
       {
         type: "file",
         name: "retail-stores",
-        path: "./data/retail-sales.csv",
+        path: process.env.SALES_FILE_PATH,
       },
     ],
     transformations: [
