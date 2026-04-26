@@ -2,6 +2,7 @@
 export interface FetcherConfig {
   name: string;
   type: string;
+  [key: string]: any;
 }
 
 export type ApiRaw = {

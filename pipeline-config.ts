@@ -24,9 +24,6 @@ export function createDefaultPipelineConfig(): PipelineConfig {
     ],
     transformations: [
       {
-        type: "normalize",
-      },
-      {
         type: "filter",
         field: "timestamp",
         condition: "last24hours",
@@ -34,10 +31,6 @@ export function createDefaultPipelineConfig(): PipelineConfig {
       {
         type: "aggregate",
         groupBy: "category",
-        calculate: {
-          field: "amount",
-          operation: "sum",
-        },
       },
     ],
     observers: [{ type: "console-logger" }, { type: "error-tracker" }],

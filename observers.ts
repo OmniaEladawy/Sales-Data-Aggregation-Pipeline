@@ -1,5 +1,5 @@
 //observer pattern
-import { Observer, PipelineEvent } from "./types.js";
+import { Observer, PipelineEvent } from "./types";
 
 //implementation for logging and error tracking
 export class ConsoleLogger implements Observer {
