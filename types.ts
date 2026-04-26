@@ -2,7 +2,6 @@
 export interface FetcherConfig {
   name: string;
   type: string;
-  [key: string]: any;
 }
 
 export type ApiRaw = {
@@ -76,7 +75,6 @@ export interface TransformationConfig {
     operation: "sum";
   };
   mapping?: Record<string, string>;
-  [key: string]: any;
 }
 
 export interface PipelineConfig {

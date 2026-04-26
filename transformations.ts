@@ -17,19 +17,7 @@ abstract class Transformation<TInput = any, TOutput = any> {
   abstract transform(data: TInput): Promise<TOutput>;
 }
 
-// 1-normalization transformation
-export class NormalizeTransformation extends Transformation<
-  NormalizedSalesRecord[],
-  NormalizedSalesRecord[]
-> {
-  async transform(
-    data: NormalizedSalesRecord[],
-  ): Promise<NormalizedSalesRecord[]> {
-    return data;
-  }
-}
-
-// 2-filter transformation
+// 1-filter transformation
 export class FilterTransformation extends Transformation<
   NormalizedSalesRecord[],
   NormalizedSalesRecord[]
@@ -55,7 +43,7 @@ export class FilterTransformation extends Transformation<
   }
 }
 
-// 3-aggregation transformation
+// 2-aggregation transformation
 export class AggregateTransformation extends Transformation<
   NormalizedSalesRecord[],
   AggregatedSalesRecord[]
@@ -64,9 +52,12 @@ export class AggregateTransformation extends Transformation<
     data: NormalizedSalesRecord[],
   ): Promise<AggregatedSalesRecord[]> {
     const grouped = new Map<string, AggregatedSalesRecord>();
+    const { groupBy } = this.config;
 
     for (const record of data) {
-      const categoryKey = record.category;
+      const categoryKey = record[
+        groupBy as keyof NormalizedSalesRecord
+      ] as string;
 
       if (!grouped.has(categoryKey)) {
         grouped.set(categoryKey, {
@@ -95,8 +86,6 @@ export function createTransformation(
   config: TransformationConfig,
 ): Transformation<any, any> {
   switch (config.type) {
-    case "normalize":
-      return new NormalizeTransformation(config);
     case "filter":
       return new FilterTransformation(config);
     case "aggregate":
