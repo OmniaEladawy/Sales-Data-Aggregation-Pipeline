@@ -70,11 +70,6 @@ export interface TransformationConfig {
   field?: string;
   condition?: string;
   groupBy?: string;
-  calculate?: {
-    field: string;
-    operation: "sum";
-  };
-  mapping?: Record<string, string>;
 }
 
 export interface PipelineConfig {
