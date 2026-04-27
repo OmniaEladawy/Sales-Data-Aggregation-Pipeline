@@ -29,7 +29,7 @@ export class FilterTransformation extends Transformation<
 
     if (condition === "last24hours") {
       const cutOff = new Date();
-      cutOff.setHours(cutOff.getHours() - 24);
+      cutOff.setTime(cutOff.getTime() - 24 * 60 * 60 * 1000);
       return data.filter((record) => {
         if (!field) {
           throw new Error("Field is undefined in FilterTransformation config.");
