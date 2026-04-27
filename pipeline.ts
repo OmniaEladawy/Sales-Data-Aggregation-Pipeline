@@ -94,7 +94,8 @@ export class SalesDataPipeline {
     });
 
     let transformedData: any = successfulRecords;
-    const transformations = this.config.transformations.map(createTransformation);
+    const transformations =
+      this.config.transformations.map(createTransformation);
 
     for (const transformation of transformations) {
       this.notify({
@@ -122,7 +123,7 @@ export class SalesDataPipeline {
       : 0;
 
     const result: PipelineResult = {
-      success: true,
+      success: successfulRecords.length > 0,
       timestamp: new Date().toISOString(),
       data: transformedData,
       summary: {
