@@ -10,7 +10,7 @@
     "build:css": "node node_modules/@tailwindcss/cli/dist/index.mjs -i ./ui/tailwind.css -o ./ui/styles.css",
     "tailwind:watch": "node node_modules/@tailwindcss/cli/dist/index.mjs -i ./ui/tailwind.css -o ./ui/styles.css --watch",
     "dashboard": "npm start",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node -r ts-node/register tests/run-tests.ts"
   },
   "repository": {
     "type": "git",
