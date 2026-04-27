@@ -1,55 +1,53 @@
 # Sales Data Aggregation Pipeline
 
-A TypeScript project that simulates collecting sales records from multiple sources, normalizing them into one shared shape, applying transformations, and producing aggregated results.
+A TypeScript demo pipeline that collects mocked sales records from multiple source types, normalizes them into one shared format, applies transformations, and returns aggregated sales totals for a dashboard or console run.
 
-## What This Project Does
+## What It Does
 
-The pipeline currently:
+- Fetches sales data from mocked API, database, and file sources
+- Normalizes source-specific records into a common `NormalizedSalesRecord` shape
+- Filters records to the last 24 hours
+- Aggregates sales totals by category
+- Emits lifecycle events through observers
+- Continues processing when one source fails
+- Serves the latest pipeline result through a lightweight browser dashboard
 
-- fetches mocked sales data from API, database, and file sources
-- normalizes each source into a shared sales record structure
-- applies configurable transformations
-- aggregates totals by category
-- emits pipeline lifecycle events through observers
+## Design Patterns
 
-This repository is set up as a small architecture exercise that demonstrates common backend design patterns in a practical way.
-
-## Design Patterns Used
-
-- `Factory Pattern`: creates fetchers and transformations from config objects
-- `Strategy Pattern`: swaps source-specific fetch and transform behavior behind shared interfaces
-- `Template Method Pattern`: the base fetcher defines the shared contract while concrete fetchers implement source logic
-- `Observer Pattern`: logs pipeline events and failures through pluggable observers
+- `Factory Pattern`: creates fetchers, transformations, and observers from config
+- `Strategy Pattern`: swaps source-specific fetch and normalization behavior behind shared interfaces
+- `Template Method Pattern`: defines the common fetcher contract while each fetcher implements its source logic
+- `Observer Pattern`: sends pipeline events and failures to pluggable observers
 
 ## Project Structure
 
-- `index.ts`: runnable entry point that builds the pipeline config and executes it
-- `server.ts`: lightweight HTTP server that exposes the pipeline output to a browser UI
-- `pipeline-config.ts`: shared default pipeline configuration used by both the CLI and dashboard
-- `pipline.ts`: pipeline orchestration logic for fetch, normalize, transform, aggregate, and summary output
-- `fetchers.ts`: source fetchers plus the fetcher factory
-- `transformations.ts`: normalize, filter, and aggregate transformations
-- `observers.ts`: console logging and error tracking observers
-- `types.ts`: shared TypeScript interfaces and result types
-- `helpers.ts`: utility helpers such as simulated async delay
-- `ui/index.html`: dashboard markup
-- `ui/app.js`: dashboard rendering logic
-- `ui/tailwind.css`: Tailwind source file for the dashboard
-- `ui/styles.css`: compiled Tailwind output served by the dashboard
+```text
+.
+├── index.ts                  # Console entry point
+├── server.ts                 # HTTP server for the dashboard and API endpoint
+├── pipeline-config.ts        # Shared default pipeline configuration
+├── pipeline.ts               # Pipeline orchestration
+├── fetchers.ts               # Source fetchers and fetcher factory
+├── transformations.ts        # Filter and aggregate transformations
+├── observers.ts              # Console logger and error tracker observers
+├── types.ts                  # Shared TypeScript types
+├── helpers.ts                # Small utility helpers
+├── tests/                    # Lightweight TypeScript test suite
+└── ui/                       # Dashboard HTML, JavaScript, and Tailwind CSS
+```
 
 ## Data Flow
 
-1. `index.ts` defines the pipeline configuration.
+1. `createDefaultPipelineConfig()` defines sources, transformations, and observers.
 2. `SalesDataPipeline` creates fetchers for each configured source.
-3. Each fetcher retrieves mocked raw data and normalizes it into `NormalizedSalesRecord`.
-4. Transformations run in sequence.
-5. The aggregate stage groups records by category and calculates total sales.
-6. Observers receive status updates during execution.
-7. The final result includes aggregated data, summary metrics, and any source errors.
+3. Source fetches run concurrently.
+4. Each successful source normalizes its raw records.
+5. Failed sources are collected as pipeline errors.
+6. Transformations run in order: filter, then aggregate.
+7. Observers receive pipeline status events.
+8. The final result includes aggregated data, summary metrics, and source errors.
 
 ## Normalized Record Shape
-
-Each normalized record uses the following structure:
 
 ```ts
 {
@@ -62,15 +60,15 @@ Each normalized record uses the following structure:
 }
 ```
 
-## Example Pipeline Configuration
+## Default Configuration
 
-The default config in `index.ts` includes:
+The default config in `pipeline-config.ts` uses:
 
-- 3 sources: `api`, `database`, and `file`
-- 3 transformations: `normalize`, `filter`, and `aggregate`
-- 2 observers: `console-logger` and `error-tracker`
+- Sources: `api`, `database`, and `file`
+- Transformations: `filter` with `last24hours`, then `aggregate` by `category`
+- Observers: `console-logger` and `error-tracker`
 
-The configured filter keeps records from the last 24 hours, and the aggregation groups by category.
+The config reads optional values from environment variables so real connection details can be added later without changing the code.
 
 ## Getting Started
 
@@ -85,74 +83,122 @@ The configured filter keeps records from the last 24 hours, and the aggregation 
 npm install
 ```
 
-### Run the Project
+### Configure Environment
+
+Create a local `.env` file from the example:
+
+```bash
+cp .env.example .env
+```
+
+The current fetchers use mocked data, so the placeholder values are enough for local demo runs.
+
+Available variables:
+
+```text
+SALES_API_URL
+SALES_API_TOKEN
+SALES_DB_CONNECTION
+SALES_FILE_PATH
+PORT
+```
+
+## Running the Project
+
+Start the dashboard:
 
 ```bash
 npm start
 ```
 
-This builds the dashboard CSS, starts `server.ts`, and keeps the local server running at `http://localhost:3000`.
+This builds `ui/styles.css`, starts `server.ts`, and serves the dashboard at:
 
-### Run the Pipeline in the Console
+```text
+http://localhost:3000
+```
+
+Run the pipeline once in the console:
 
 ```bash
 npm run pipeline
 ```
 
-This runs `ts-node index.ts`, executes the pipeline once, and prints the final aggregated result to the console.
-
-### Run the Dashboard
+Run the dashboard alias:
 
 ```bash
 npm run dashboard
 ```
 
-This is an alias for `npm start`.
-
-If you are using PowerShell with script execution restrictions, use:
-
-```bash
-npm.cmd start
-```
-
-### Rebuild Tailwind Styles
+Rebuild Tailwind styles:
 
 ```bash
 npm run build:css
 ```
 
-For live Tailwind rebuilds while editing the dashboard:
+Watch Tailwind styles while editing:
 
 ```bash
 npm run tailwind:watch
 ```
 
-## Expected Output
+Run tests:
 
-When the pipeline succeeds, the final output includes:
+```bash
+npm test
+```
 
-- aggregated category data
-- total sales across all aggregated groups
-- number of successful and failed sources
-- total normalized records processed
-- total execution time
-- collected source errors, if any
-- a browser dashboard with summary cards, category totals, pipeline events, and errors
+If PowerShell blocks npm scripts, use `npm.cmd`, for example:
 
-## Current Implementation Notes
+```bash
+npm.cmd start
+```
+
+## Dashboard API
+
+The server exposes the latest pipeline run at:
+
+```text
+GET /api/pipeline
+```
+
+The response includes:
+
+- `generatedAt`: time the dashboard request was handled
+- `result.data`: aggregated category totals
+- `result.summary`: total sales, source counts, records processed, and execution time
+- `result.errors`: collected source errors
+- `events`: observer events captured during the run
+
+## Example Result Shape
+
+```ts
+{
+  success: true,
+  timestamp: "2026-04-27T10:00:00.000Z",
+  data: [
+    {
+      category: "Electronics",
+      totalSales: 434.98,
+      recordCount: 3,
+      sources: ["web-store", "mobile-app", "retail-stores"]
+    }
+  ],
+  summary: {
+    totalSales: 932.95,
+    sourcesSucceeded: 3,
+    sourcesFailed: 0,
+    recordsProcessed: 9,
+    executionTimeMs: 1200
+  },
+  errors: []
+}
+```
+
+## Implementation Notes
 
 - Source data is mocked; no live API, database, or file integrations are connected yet.
-- Mocked timestamps are generated relative to the current time so the `last24hours` filter continues to return data.
+- Mocked timestamps are generated relative to the current time so the `last24hours` filter keeps returning data.
 - Fetchers simulate latency with `delay(...)`.
-- Source fetches run concurrently with `Promise.allSettled`, so one failing source does not stop the whole pipeline.
-- The main pipeline file is currently named `pipeline.ts`.
-- The dashboard styling is built with Tailwind CSS v4 via the local CLI.
-
-## Future Improvements
-
-- connect the file source to real CSV or JSON parsing
-- add stronger typing for source-specific configs instead of broad index signatures
-- separate demo code from reusable modules
-- add unit tests for fetchers, transformations, and pipeline summaries
-- add linting and build scripts
-- support additional aggregation options beyond category totals
+- Source fetches use `Promise.allSettled`, so one failed source does not stop the full run.
+- Dashboard styling is built with Tailwind CSS v4 through the local CLI.
+- Tests use a lightweight custom runner in `tests/test-utils.ts`.
