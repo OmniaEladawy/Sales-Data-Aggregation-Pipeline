@@ -23,17 +23,19 @@ A TypeScript demo pipeline that collects mocked sales records from multiple sour
 
 ```text
 .
-├── index.ts                  # Console entry point
-├── server.ts                 # HTTP server for the dashboard and API endpoint
-├── pipeline-config.ts        # Shared default pipeline configuration
-├── pipeline.ts               # Pipeline orchestration
-├── fetchers.ts               # Source fetchers and fetcher factory
-├── transformations.ts        # Filter and aggregate transformations
-├── observers.ts              # Console logger and error tracker observers
-├── types.ts                  # Shared TypeScript types
-├── helpers.ts                # Small utility helpers
-├── tests/                    # Lightweight TypeScript test suite
-└── ui/                       # Dashboard HTML, JavaScript, and Tailwind CSS
+|-- index.ts                     # Console entry point
+|-- server.ts                    # HTTP server for the dashboard and API endpoint
+|-- pipeline-config.ts           # Shared default pipeline configuration
+|-- pipeline.ts                  # Pipeline orchestration
+|-- pipeline-components/         # Fetchers, observers, and transformations
+|   |-- fetchers.ts              # Source fetchers and fetcher factory
+|   |-- observers.ts             # Console logger and error tracker observers
+|   |-- transformations.ts       # Filter and aggregate transformations
+|   `-- index.ts                 # Grouped exports for pipeline components
+|-- types.ts                     # Shared TypeScript types
+|-- helpers.ts                   # Small utility helpers
+|-- tests/                       # Lightweight TypeScript test suite
+`-- ui/                          # Dashboard HTML, JavaScript, and Tailwind CSS
 ```
 
 ## Data Flow

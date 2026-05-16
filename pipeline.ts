@@ -1,6 +1,8 @@
-import { createFetcher } from "./fetchers";
-import { createObserver } from "./observers";
-import { createTransformation } from "./transformations";
+import {
+  createFetcher,
+  createObserver,
+  createTransformation,
+} from "./pipeline-components";
 import {
   NormalizedSalesRecord,
   Observer,

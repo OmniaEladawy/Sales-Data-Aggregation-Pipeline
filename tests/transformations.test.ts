@@ -2,7 +2,7 @@ import {
   AggregateTransformation,
   FilterTransformation,
   createTransformation,
-} from "../transformations";
+} from "../pipeline-components/transformations";
 import { NormalizedSalesRecord } from "../types";
 import { assert, test } from "./test-utils";
 

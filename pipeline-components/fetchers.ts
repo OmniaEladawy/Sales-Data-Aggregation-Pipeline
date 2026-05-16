@@ -1,11 +1,11 @@
-import { delay, hoursAgoIso } from "./helpers";
+import { delay, hoursAgoIso } from "../helpers";
 import {
   ApiRaw,
   DatabaseRaw,
   FetcherConfig,
   FileRaw,
   NormalizedSalesRecord,
-} from "./types";
+} from "../types";
 
 // template pattern for main fetcher
 // MainFetcher is now generic over config and fetch result

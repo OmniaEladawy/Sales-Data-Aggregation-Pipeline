@@ -1,4 +1,4 @@
-import { createFetcher } from "../fetchers";
+import { createFetcher } from "../pipeline-components/fetchers";
 import { assert, test } from "./test-utils";
 
 test("createFetcher: creates an API fetcher and normalizes API records", async () => {

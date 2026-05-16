@@ -4,7 +4,7 @@ import {
   AggregatedSalesRecord,
   NormalizedSalesRecord,
   TransformationConfig,
-} from "./types";
+} from "../types";
 
 // base transformation class
 abstract class Transformation<TInput = any, TOutput = any> {
